@@ -8,25 +8,22 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Robot {
 
-    private DcMotor lfDrive, lbDrive, rfDrive, rbDrive;
-    private Servo pivot;
+    private DcMotor lfDrive, lbDrive, rfDrive, rbDrive, intake, lShooter, rShooter, arm;
+    private Servo grabber;
 
     private HardwareMap hwMap;
     OpMode opMode;
 
-    private static final double WIDTH = 16;
-    private static final double LENGTH = 5;
+    private static final double WIDTH = 13.75;
+    private static final double LENGTH = 12.25;
     private static final double MAX_SPEED = 1.0;
-
-
-
 
     public void init(HardwareMap ahwMap, OpMode op) {
         // Save reference to Hardware map
-        hwMap = ahwMap;
-        opMode = op;
+        this.hwMap = ahwMap;
+        this.opMode = op;
 
-        this.pivot = hwMap.get(Servo.class, "pivot");
+        this.grabber = hwMap.get(Servo.class, "grabber");
 
         // Define and Initialize Motors
         this.lfDrive  = hwMap.get(DcMotor.class, "lfDrive");
@@ -37,6 +34,15 @@ public class Robot {
         lbDrive.setDirection((DcMotor.Direction.REVERSE));
         rfDrive.setDirection(DcMotor.Direction.FORWARD);
         rbDrive.setDirection((DcMotor.Direction.FORWARD));
+
+        this.intake  = hwMap.get(DcMotor.class, "intake");
+        this.arm  = hwMap.get(DcMotor.class, "arm");
+        this.lShooter = hwMap.get(DcMotor.class, "lShooter");
+        this.rShooter = hwMap.get(DcMotor.class, "rShooter");
+        intake.setDirection(DcMotor.Direction.REVERSE);
+        arm.setDirection((DcMotor.Direction.FORWARD));
+        lShooter.setDirection(DcMotor.Direction.FORWARD);
+        rShooter.setDirection(DcMotor.Direction.REVERSE);
 
         stop();
 
@@ -52,8 +58,8 @@ public class Robot {
 
 
 
-    public void setPivotPosition(double pivotPosition){
-        pivot.setPosition(pivotPosition);
+    public void setGrabberPosition(double position){
+        grabber.setPosition(position);
     }
 
     public void skidSteerDrive(double lPower, double rPower){
@@ -94,6 +100,19 @@ public class Robot {
         }
 
         return max;
+    }
+
+    public void setShooterPower(double power) {
+        lShooter.setPower(power);
+        rShooter.setPower(power);
+    }
+
+    public void setIntakePower(double power) {
+        intake.setPower(power);
+    }
+
+    public void setArmPower(double power) {
+        arm.setPower(power);
     }
 
     public void stop(){
